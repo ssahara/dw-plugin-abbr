@@ -1,0 +1,7 @@
+base  abbr
+name  abbr
+author Satoshi Sahara
+email  sahara.satoshi@gmail.com
+date   2014-01-05
+desc   abbr tag for abbreviation
+url    https://www.dokuwiki.org/plugin:abbr
