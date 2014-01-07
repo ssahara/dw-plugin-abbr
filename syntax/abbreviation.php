@@ -6,14 +6,11 @@
  * @author     Satoshi Sahara <sahara.satoshi@gmail.com>
  *
   SYNTAX:
-        <abbr>whole phrase (shortened word)</abbr>
-        <abbr>whole phrase （shortened word）</abbr>  // Japanese: 全角カッコ
-        <abbr>shortened word|whole phrase</abbr>
-        <abbr short>whole phrase (shortened word)</abbr>
+        Type 1: <abbr>whole phrase (shortened word)</abbr>
+        Type 2: <abbr>shortened word [whole phrase]</abbr>
 
   OUTPUT:
         <abbr title="whole phrase">shortened word</abbr>
-        <abbr>shortened word</abbr>
  */
 
 if(!defined('DOKU_INC')) die();
@@ -47,19 +44,28 @@ class syntax_plugin_abbr_abbreviation extends DokuWiki_Syntax_Plugin {
         }
 
         if (preg_match("/(^.*)（(((?>[^（）]+)|(?R))*)）$/u", $match, $matches)) {
-            // Japanese 末尾に置いた「全角カッコ内」で省略語を指定 （日本語向け）
+            // Type 1-Japanese 末尾に置いた「全角カッコ内」で省略語を指定（日本語向け）
             $shortened = $matches[2];
             $phrase = $matches[1];
-        } elseif (preg_match("/(^.*)\((((?>[^()]+)|(?R))*)\)$/", $match, $matches)) {
-            // shortened word or phrase will found in tailing ()
+        } elseif (preg_match("/(^.*)\((((?>[^\(\)]+)|(?R))*)\)$/", $match, $matches)) {
+            // Type 1: shortened word will found in tailing ()
+            // ex. <abbr>HyperText Markup Language (HTML)</abbr>
             $shortened = $matches[2];
-            $phrase = $matches[1];
+            $phrase = rtrim($matches[1]);
+        } elseif (preg_match("/(^.*)\[(((?>[^\[\]]+)|(?R))*)\]$/", $match, $matches)) {
+            // Type 2: whole phrase will found in tailing []
+            // ex. <abbr>HTML [HyperText Markup Language]</abbr>
+            $shortened = rtrim($matches[1]);
+            $phrase = $matches[2];
         } elseif (strpos($match,'|') !== false) {
+            // Type 3: (experimental)
+            // ex. <abbr>HTML|HyperText Markup Language</abbr>
             list($shortened, $phrase) = explode('|',$match,2);
             $shortened = trim($shortened);
             $phrase = trim($phrase);
         } else {
             //msg('shortend word not found in "'.$match.'"' ,2);
+            $shortonly = true;
             $shortened = trim($match);
             $phrase = $shortened;
         }
