@@ -22,14 +22,21 @@ require_once(DOKU_PLUGIN.'syntax.php');
  */
 class syntax_plugin_abbr_htmltag extends DokuWiki_Syntax_Plugin {
 
+    protected $entry_pattern    = '<abbr\b(?:\s+title=.*?)>(?=.*?</abbr>)';
+    protected $exit_pattern     = '</abbr>';
+
     public function getType() { return 'formatting'; }
     public function getSort() { return 305; }
 
     public function connectTo($mode) {
-        $this->Lexer->addEntryPattern('<abbr title=.*?>(?=.*?</abbr>)',$mode,'plugin_abbr_htmltag');
+        $this->Lexer->addEntryPattern($this->entry_pattern,$mode,
+            implode('_', array('plugin',$this->getPluginName(),$this->getPluginComponent(),))
+        );
     }
     public function postConnect() {
-        $this->Lexer->addExitPattern('</abbr>','plugin_abbr_htmltag');
+        $this->Lexer->addExitPattern($this->exit_pattern,
+            implode('_', array('plugin',$this->getPluginName(),$this->getPluginComponent(),))
+        );
     }
 
    /**

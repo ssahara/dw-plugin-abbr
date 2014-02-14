@@ -23,11 +23,15 @@ require_once(DOKU_PLUGIN.'syntax.php');
  */
 class syntax_plugin_abbr_abbreviation extends DokuWiki_Syntax_Plugin {
 
+    protected $special_pattern = '<abbr\b(?:\s+short)?>.*?</abbr>';
+
     public function getType() { return 'formatting'; }
     public function getSort() { return 65; }
 
     public function connectTo($mode) {
-        $this->Lexer->addSpecialPattern('<abbr(?: short)?>.*?</abbr>',$mode,'plugin_abbr_abbreviation');
+        $this->Lexer->addSpecialPattern($this->special_pattern,$mode,
+            implode('_', array('plugin',$this->getPluginName(),$this->getPluginComponent(),))
+        );
     }
 
    /**
