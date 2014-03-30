@@ -79,9 +79,9 @@ class syntax_plugin_abbr_abbreviation extends DokuWiki_Syntax_Plugin {
    /**
     * Create output
     */
-    public function render($mode, &$renderer, $data) {
+    public function render($format, &$renderer, $data) {
 
-        if ($mode != 'xhtml') return false;
+        if ($format != 'xhtml') return false;
 
         list($state, $shortonly, $shortened, $phrase) = $data;
         if ($shortonly) {

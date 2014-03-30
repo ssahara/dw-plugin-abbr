@@ -46,17 +46,10 @@ class syntax_plugin_abbr_htmltag extends DokuWiki_Syntax_Plugin {
 
         switch ($state) {
             case DOKU_LEXER_ENTER :
-                return array($state, $match);
-        //  case DOKU_LEXER_MATCHED :
-        //      break;
             case DOKU_LEXER_UNMATCHED :
-                return array($state, $match);
             case DOKU_LEXER_EXIT :
-                // return array($state, '');
                 return array($state, $match);
                 break;
-        //  case DOKU_LEXER_SPECIAL :
-        //      break;
         }
         return false;
     }
@@ -64,9 +57,9 @@ class syntax_plugin_abbr_htmltag extends DokuWiki_Syntax_Plugin {
    /**
     * Create output
     */
-    public function render($mode, &$renderer, $data) {
+    public function render($format, &$renderer, $data) {
 
-        if($mode == 'xhtml') {
+        if($format == 'xhtml') {
             list($state, $match) = $data;
             $match = $data[1];
 
