@@ -37,7 +37,7 @@ class syntax_plugin_abbr_abbreviation extends DokuWiki_Syntax_Plugin {
    /**
     * Handle the match
     */
-    public function handle($match, $state, $pos, &$handler) {
+    public function handle($match, $state, $pos, Doku_Handler &$handler) {
 
         $match = substr($match, 6,-7); // drop markup
         if (preg_match("/^short>/", $match)) {
@@ -79,7 +79,7 @@ class syntax_plugin_abbr_abbreviation extends DokuWiki_Syntax_Plugin {
    /**
     * Create output
     */
-    public function render($format, &$renderer, $data) {
+    public function render($format, Doku_Renderer &$renderer, $data) {
 
         if ($format != 'xhtml') return false;
 

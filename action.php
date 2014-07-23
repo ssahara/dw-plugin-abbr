@@ -16,14 +16,14 @@ class action_plugin_abbr extends DokuWiki_Action_Plugin {
     /**
      * register the eventhandlers
      */
-    function register(&$controller) {
+    public function register(Doku_Event_Handler $controller) {
         $controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'abbr_button', array ());
     }
 
     /**
      * Inserts a toolbar button
      */
-    function abbr_button(&$event, $param) {
+    public function abbr_button(&$event, $param) {
         $event->data[] = array (
             'type' => 'picker',
             'title' => $this->getLang('abbr_toolbar_title'),
