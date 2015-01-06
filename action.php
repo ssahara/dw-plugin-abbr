@@ -17,7 +17,24 @@ class action_plugin_abbr extends DokuWiki_Action_Plugin {
      * register the eventhandlers
      */
     public function register(Doku_Event_Handler $controller) {
+        $controller->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', $this, 'abbr_metaheader_output', array ());
         $controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'abbr_button', array ());
+    }
+
+    /**
+     * Preload javascript and stylesheet
+     */
+    public function abbr_metaheader_output(&$event, $param) {
+        $event->data['script'][] = array(
+            'type' => 'text/javascript',
+            'src' => DOKU_BASE.'lib/plugins/abbr/dropdown/jquery.dropdown.js',
+            '_data' => '',
+        );
+        $event->data['link'][] = array(
+            'type' => 'text/css',
+            'rel' => 'stylesheet',
+            'href' => DOKU_BASE.'lib/plugins/abbr/dropdown/jquery.dropdown.css',
+        );
     }
 
     /**
