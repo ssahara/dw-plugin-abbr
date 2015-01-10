@@ -1,0 +1,23 @@
+.plugin_dropdown_ddtrigger {
+    color: __existing__;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+}
+/*
+span.plugin_dropdown_ddtrigger img {
+    color: __existing__;
+    cursor: pointer;
+    padding: 4px 0;
+    border-radius: 4px;
+}
+span.plugin_dropdown_ddtrigger:after {
+    font-family: Consolas, Courier New, Arial, sans-serif;
+    content: '↓';
+    margin-left: 6px;
+}
+*/
+.plugin_dropdown_ddtrigger:hover {
+    /*background: #F2F2F2;*/
+    background: __background_alt__;
+}

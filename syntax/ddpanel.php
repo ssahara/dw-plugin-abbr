@@ -2,8 +2,20 @@
 /**
  * DokuWiki Plugin Dropdown; ddpanel
  *
- * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author     Anika Henke <anika@selfthinker.org>
+ * @license GPL 2 (http://www.gnu.org/licenses/gpl.html)
+ * @author  Satoshi Sahara <sahara.satoshi@gmail.com>
+ *
+ * SYNTAX:
+ *    Trigger Link:
+ *            [[dropdown>#pid|text]]
+ *            [[dropdown>!#pid|text]]   ...dropdown disabled
+ *            [[dropdown>#pid|{{image|title of image}}]]
+ *
+ *            <dropdown #pid> .. </dropdown>
+ *
+ *    Dropdown Content:
+ *             <dropdown-panel #pid> ... </dropdown-panel>
+ *
  */
 
 require_once(DOKU_PLUGIN.'wrap/syntax/div.php');
@@ -11,7 +23,7 @@ require_once(DOKU_PLUGIN.'wrap/syntax/closesection.php');
 
 class syntax_plugin_abbr_ddpanel extends syntax_plugin_wrap_div {
 
-    protected $entry_pattern = '<dropdown-panel.*?>(?=.*?</dropdown-panel>)';
+    protected $entry_pattern = '<dropdown-panel\b +#.*?>(?=.*?</dropdown-panel>)';
     protected $exit_pattern  = '</dropdown-panel>';
 /*
     function getType(){ return 'formatting';}
@@ -38,6 +50,7 @@ class syntax_plugin_abbr_ddpanel extends syntax_plugin_wrap_div {
     /**
      * Handle the match
      */
+/*
     function handle($match, $state, $pos, Doku_Handler $handler){
         global $conf;
         switch ($state) {
@@ -72,6 +85,7 @@ class syntax_plugin_abbr_ddpanel extends syntax_plugin_wrap_div {
         }
         return false;
     }
+*/
 
     /**
      * Create output
@@ -93,14 +107,15 @@ class syntax_plugin_abbr_ddpanel extends syntax_plugin_wrap_div {
                     // include the whole wrap syntax
                     $renderer->startSectionEdit(0, 'plugin_wrap_end');
 
+                    $class= 'dropdown dropdown-tip dropdown-relative';
                     $wrap =& plugin_load('helper', 'wrap');
-                    $attr = $wrap->buildAttributes($data, 'dropdown dropdown-tip dropdown-relative');
+                    $attr = $wrap->buildAttributes($data, $class);
 
                     $renderer->doc .= '<div'.$attr.'><div class="dropdown-panel">';
                     break;
 
                 case DOKU_LEXER_EXIT:
-                    $renderer->doc .= "</div></div>";
+                    $renderer->doc .= '</div></div>';
                     $renderer->finishSectionEdit();
                     break;
             }

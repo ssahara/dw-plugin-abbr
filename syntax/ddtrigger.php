@@ -6,8 +6,15 @@
  * @author Satoshi Sahara <sahara.satoshi@gmail.com>
  *
  * SYNTAX: 
- *    Trigger Link:     {{dropdown #pid|text}}
- *    Dropdown Content:  <dropdown-panel #pid> ... </dropdown-panel>
+ *    Trigger Link:
+ *            [[dropdown>#pid|text]]
+ *            [[dropdown>!#pid|text]]   ...dropdown disabled
+ *            [[dropdown>#pid|{{image|title of image}}]]
+ *
+ *            <dropdown #pid> .. </dropdown>
+ *
+ *    Dropdown Content:
+ *             <dropdown-panel #pid> ... </dropdown-panel>
  *
  */
 
@@ -18,41 +25,94 @@ require_once DOKU_PLUGIN.'syntax.php';
 
 class syntax_plugin_abbr_ddtrigger extends DokuWiki_Syntax_Plugin {
 
-    protected $match_pattern1 = '{{dropdown\b[^\n}]+?\}\}\}\}';
-    protected $match_pattern2 = '{{dropdown\b.*?\|.*?}}';
+    protected $match_pattern = '\[\[dropdown>!?#.*?\|.*?]]';
 
-    public function getType()  { return 'substition'; }
+    protected $entry_pattern = '<dropdown\b !?#.*?\>(?=.*?</dropdown>)';
+    protected $exit_pattern  = '</dropdown>';
+
+    public function getType()  { return 'formatting'; }
+    public function getAllowedTypes() { return array('formatting', 'substition', 'disabled'); }
     public function getPType() { return 'normal'; }
-    public function getSort()  { return 305; }
+    public function getSort()  { return 195; }
+
     public function connectTo($mode) {
-        $this->Lexer->addSpecialPattern($this->match_pattern2, $mode, 'plugin_abbr_ddtrigger');
+        $this->Lexer->addSpecialPattern($this->match_pattern, $mode, 'plugin_abbr_ddtrigger');
+        $this->Lexer->addEntryPattern($this->entry_pattern, $mode, 'plugin_abbr_ddtrigger');
+    }
+    public function postConnect() {
+        $this->Lexer->addExitPattern($this->exit_pattern, 'plugin_abbr_ddtrigger');
     }
 
     /*
      * handle syntax
      */
     public function handle($match, $state, $pos, Doku_handler $handler){
+        switch ($state) {
+            case DOKU_LEXER_SPECIAL:
+                $match = substr($match, 11, -2); //strip '[[dropdown>' and ']]'
+                list($pid, $title) = explode('|', $match, 2);
+                $pid   = trim($pid);
+                $title = trim($title);
+                return array($state, $pid, $title);
+                
+            case DOKU_LEXER_ENTER:
+                $data = substr($match, 9, -1); //strip '<dropdown' and '|'
+                $data = trim($data);
+                return array($state, $data);
 
-        $match = substr($match, 10, -2); // strip '{{dropdown' and '}}'
-        list($params, $title) = explode('|', $match, 2);
-        
-        $id = trim($params);  // eg. #dropdown-1
-        
-        return array($state, $id, $title);
+            case DOKU_LEXER_UNMATCHED:
+                $handler->_addCall('cdata', array($match), $pos);
+                return false;
+
+            case DOKU_LEXER_EXIT:
+                return array($state, '');
+        }
+        return false;
     }
 
     /*
      * Render output
      */
-    public function render($format, Doku_renderer $renderer, $data){
+    public function render($format, Doku_renderer $renderer, $indata){
+
+        if (empty($indata)) return false;
+        list($state, $pid, $title) = $indata;
 
         if ($format != 'xhtml') return false;
 
-        list($state, $id, $title) = $data;
+        switch($state) {
+            case DOKU_LEXER_SPECIAL:
+                $class = 'plugin_dropdown_ddtrigger';
+                if (($title) && preg_match('/{{(.*?)}}/', $title)) {
+                    // image title
+                    $html = p_render($format, p_get_instructions($title), $info);
+                    $html = strip_tags($html, '<img>');
+                    $ins = 'data-dropdown="'.hsc($pid).'" ';
+                    $html = str_replace('<img ', '<img '.$ins, $html);
+                    $html = str_replace('class="', 'class="'.$class.' ', $html);
+                } else {
+                    // text title
+                    $html = '<span class="'.$class.'" data-dropdown="'.hsc($pid).'" title="↓dropdown">';
+                    $html.= hsc($title);
+                    $html.= '</span>';
+                }
+                $renderer->doc .= $html;
+                break;
 
-        // 例 <a href="#" data-dropdown="#dropdown-1">dropdown</a>
-        $html = '<a href="#" data-dropdown="'.$id.'">'.$title.'</a>';
-        $renderer->doc .= $html;
+            case DOKU_LEXER_ENTER:
+                $class = 'plugin_dropdown_ddtrigger';
+                if ($pid[0] != '#'){
+                    $pid = substr($pid, 1);
+                    $class .= ' dropdown-disabled';
+                }
+
+                $renderer->doc .= '<span class="'.$class.'" data-dropdown="'.hsc($pid).'" title="↓dropdown">';
+                break;
+
+            case DOKU_LEXER_EXIT:
+                $renderer->doc .= '</span>';
+                break;
+        }
         return true;
     }
 
