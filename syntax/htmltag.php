@@ -5,21 +5,15 @@
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author     Satoshi Sahara <sahara.satoshi@gmail.com>
  *
-  SYNTAX:
-        <abbr title="description">TARGET</abbr>
-
-  OUTPUT:
-        <abbr title="description">TARGET</abbr>
+ * SYNTAX:
+ *       <abbr title="description">TARGET</abbr>
+ *
+ * OUTPUT:
+ *       <abbr title="description">TARGET</abbr>
  */
 
 if(!defined('DOKU_INC')) die();
-if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
-require_once(DOKU_PLUGIN.'syntax.php');
 
-/**
- * All DokuWiki plugins to extend the parser/rendering mechanism
- * need to inherit from this class
- */
 class syntax_plugin_abbr_htmltag extends DokuWiki_Syntax_Plugin {
 
     protected $entry_pattern    = '<abbr\b(?:\s+title=.*?)>(?=.*?</abbr>)';
@@ -29,14 +23,10 @@ class syntax_plugin_abbr_htmltag extends DokuWiki_Syntax_Plugin {
     public function getSort() { return 305; }
 
     public function connectTo($mode) {
-        $this->Lexer->addEntryPattern($this->entry_pattern,$mode,
-            implode('_', array('plugin',$this->getPluginName(),$this->getPluginComponent(),))
-        );
+        $this->Lexer->addEntryPattern($this->entry_pattern,$mode,substr(get_class($this), 7));
     }
     public function postConnect() {
-        $this->Lexer->addExitPattern($this->exit_pattern,
-            implode('_', array('plugin',$this->getPluginName(),$this->getPluginComponent(),))
-        );
+        $this->Lexer->addExitPattern($this->exit_pattern,substr(get_class($this), 7));
     }
 
    /**

@@ -5,22 +5,16 @@
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author     Satoshi Sahara <sahara.satoshi@gmail.com>
  *
-  SYNTAX:
-        Type 1: <abbr>whole phrase (shortened word)</abbr>
-        Type 2: <abbr>shortened word [whole phrase]</abbr>
-
-  OUTPUT:
-        <abbr title="whole phrase">shortened word</abbr>
+ * SYNTAX:
+ *       Type 1: <abbr>whole phrase (shortened word)</abbr>
+ *       Type 2: <abbr>shortened word [whole phrase]</abbr>
+ *
+ * OUTPUT:
+ *       <abbr title="whole phrase">shortened word</abbr>
  */
 
 if(!defined('DOKU_INC')) die();
-if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
-require_once(DOKU_PLUGIN.'syntax.php');
 
-/**
- * All DokuWiki plugins to extend the parser/rendering mechanism
- * need to inherit from this class
- */
 class syntax_plugin_abbr_abbreviation extends DokuWiki_Syntax_Plugin {
 
     protected $special_pattern = '<abbr\b(?:\s+short)?>.*?</abbr>';
@@ -29,9 +23,7 @@ class syntax_plugin_abbr_abbreviation extends DokuWiki_Syntax_Plugin {
     public function getSort() { return 65; }
 
     public function connectTo($mode) {
-        $this->Lexer->addSpecialPattern($this->special_pattern,$mode,
-            implode('_', array('plugin',$this->getPluginName(),$this->getPluginComponent(),))
-        );
+        $this->Lexer->addSpecialPattern($this->special_pattern,$mode,substr(get_class($this), 7));
     }
 
    /**
