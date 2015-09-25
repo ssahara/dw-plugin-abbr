@@ -25,13 +25,13 @@ class action_plugin_abbr extends DokuWiki_Action_Plugin {
         $event->data[] = array (
             'type' => 'picker',
             'title' => $this->getLang('abbr_toolbar_title'),
-            'icon' => DOKU_BASE.'lib/plugins/abbr/images/abbr-picker.png',
+            'icon' => DOKU_REL.'lib/plugins/abbr/images/abbr-picker.png',
             'list' => array(
                 array( // Type 1
                     'type'   => 'format',
                     'title'  => $this->getLang('abbr_type1'),
                     'sample' => $this->getLang('abbr_type1_sample'),
-                    'icon'   => DOKU_BASE.'lib/plugins/abbr/images/abbr-type1.png',
+                    'icon'   => DOKU_REL.'lib/plugins/abbr/images/abbr-type1.png',
                     'open'   => '<abbr>',
                     'close'  => '</abbr>',
                 ),
@@ -39,7 +39,7 @@ class action_plugin_abbr extends DokuWiki_Action_Plugin {
                     'type'   => 'format',
                     'title'  => $this->getLang('abbr_type2'),
                     'sample' => $this->getLang('abbr_type2_sample'),
-                    'icon'   => DOKU_BASE.'lib/plugins/abbr/images/abbr-type2.png',
+                    'icon'   => DOKU_REL.'lib/plugins/abbr/images/abbr-type2.png',
                     'open'   => '<abbr>',
                     'close'  => '</abbr>',
                 ),
@@ -47,7 +47,7 @@ class action_plugin_abbr extends DokuWiki_Action_Plugin {
                     'type'   => 'format',
                     'title'  => $this->getLang('abbr_type0'),
                     'sample' => $this->getLang('abbr_type0_sample'),
-                    'icon'   => DOKU_BASE.'lib/plugins/abbr/images/abbr-type0.png',
+                    'icon'   => DOKU_REL.'lib/plugins/abbr/images/abbr-type0.png',
                     'open'   => '<abbr title="">',
                     'close'  => '</abbr>',
                 ),
